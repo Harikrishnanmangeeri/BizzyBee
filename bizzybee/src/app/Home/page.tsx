@@ -1,3 +1,4 @@
+import AllProducts from "@/components/Allproducts";
 import Navbar from "@/components/Navbar";
 import { Landing } from "@/components/landing";
 import React from "react";
@@ -7,6 +8,7 @@ const page = () => {
     <div>
       <Navbar />
       <Landing/>
+      <AllProducts/>
     </div>
   );
 };
