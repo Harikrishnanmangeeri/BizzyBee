@@ -35,10 +35,19 @@ const AllProducts: React.FC = () => {
   }, []);
 
   return (
-    <div>
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', padding: '20px' }}>
       <ToastContainer/>
       {products.map(product => (
-        <Card key={product?._id} sx={{ maxWidth: 345 }}>
+        <Card key={product?._id} sx={{
+          maxWidth: 345,
+          backgroundColor: 'white',
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+          borderRadius: '8px',
+          transition: 'transform 0.3s ease-in-out',
+          '&:hover': {
+            transform: 'scale(1.05)'
+          }
+        }}>
           <CardMedia
             component="img"
             alt={product?.ProductName}
@@ -57,8 +66,8 @@ const AllProducts: React.FC = () => {
             </Typography>
           </CardContent>
           <CardActions>
-            <Button size="small">Share</Button>
-            <Button size="small">Learn More</Button>
+            <Button size="small" color="primary">Share</Button>
+            <Button size="small" color="primary">Learn More</Button>
           </CardActions>
         </Card>
       ))}

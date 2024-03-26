@@ -1,27 +1,28 @@
-'use client'
-import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
-import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
-
-import Image from 'next/image';
-
-
-const pages = ['Products', 'Rent', 'Renthistory'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+"use client";
+import * as React from "react";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import Menu from "@mui/material/Menu";
+import MenuIcon from "@mui/icons-material/Menu";
+import Container from "@mui/material/Container";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import Tooltip from "@mui/material/Tooltip";
+import MenuItem from "@mui/material/MenuItem";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 function Navbar() {
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const router = useRouter();
+  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
+    null
+  );
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
+    null
+  );
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -39,11 +40,16 @@ function Navbar() {
   };
 
   return (
-    <AppBar position="sticky" sx={{bgcolor:'lightsalmon'}}>
+    <AppBar position="sticky" sx={{ bgcolor: "lightsalmon" }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-         <Image src={'/bizzybee.png'} alt='bee' width={70} height={70}/>
-          {/* <AdbIcon  /> sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} */}
+          <Image
+            src={"/bizzybee.png"}
+            alt="bee"
+            width={70}
+            height={70}
+            onClick={() => router.push("/Home")}
+          />
           <Typography
             variant="h6"
             noWrap
@@ -51,18 +57,19 @@ function Navbar() {
             href="#app-bar-with-responsive-menu"
             sx={{
               mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
+              display: { xs: "none", md: "flex" },
+              fontFamily: "monospace",
               fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
+              letterSpacing: ".3rem",
+              color: "inherit",
+              textDecoration: "none",
             }}
+            onClick={() => router.push("/Home")}
           >
             BizzyBee
           </Typography>
 
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -77,28 +84,32 @@ function Navbar() {
               id="menu-appbar"
               anchorEl={anchorElNav}
               anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
+                vertical: "bottom",
+                horizontal: "left",
               }}
               keepMounted
               transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
+                vertical: "top",
+                horizontal: "left",
               }}
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
               sx={{
-                display: { xs: 'block', md: 'none' },
+                display: { xs: "block", md: "none" },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
-              ))}
+              <MenuItem onClick={() => router.push("/Products")}>
+                <Typography textAlign="center">Products</Typography>
+              </MenuItem>
+              <MenuItem onClick={() => router.push("/Rent")}>
+                <Typography textAlign="center">Rent</Typography>
+              </MenuItem>
+              <MenuItem onClick={() => router.push("/Renthistory")}>
+                <Typography textAlign="center">Renthistory</Typography>
+              </MenuItem>
             </Menu>
           </Box>
-          {/* <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} /> */}
+
           <Typography
             variant="h5"
             noWrap
@@ -106,27 +117,59 @@ function Navbar() {
             href="#app-bar-with-responsive-menu"
             sx={{
               mr: 2,
-              display: { xs: 'flex', md: 'none' },
+              display: { xs: "flex", md: "none" },
               flexGrow: 1,
-              fontFamily: 'monospace',
+              fontFamily: "monospace",
               fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
+              letterSpacing: ".3rem",
+              color: "inherit",
+              textDecoration: "none",
             }}
+            onClick={() => router.push("/Home")}
           >
             BizzyBee
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page}
-              </Button>
-            ))}
+
+          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+            <Button
+              variant="outlined"
+              onClick={() => router.push("/Products")}
+              sx={{
+                my: 2,
+                mx: 1,
+                borderRadius: 20,
+                color: "white",
+                borderColor: "white",
+              }}
+            >
+              Products
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => router.push("/Rent")}
+              sx={{
+                my: 2,
+                mx: 1,
+                borderRadius: 20,
+                color: "white",
+                borderColor: "white",
+              }}
+            >
+              Rent
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => router.push("/Renthistory")}
+              sx={{
+                my: 2,
+                mx: 1,
+                borderRadius: 20,
+                color: "white",
+                borderColor: "white",
+              }}
+            >
+              Renthistory
+            </Button>
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
@@ -136,26 +179,33 @@ function Navbar() {
               </IconButton>
             </Tooltip>
             <Menu
-              sx={{ mt: '45px' }}
+              sx={{ mt: "45px" }}
               id="menu-appbar"
               anchorEl={anchorElUser}
               anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
+                vertical: "top",
+                horizontal: "right",
               }}
               keepMounted
               transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
+                vertical: "top",
+                horizontal: "right",
               }}
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
+              <MenuItem onClick={() => router.push("/Profile")}>
+                <Typography textAlign="center">Profile</Typography>
+              </MenuItem>
+              <MenuItem onClick={handleCloseUserMenu}>
+                <Typography textAlign="center">Account</Typography>
+              </MenuItem>
+              <MenuItem onClick={handleCloseUserMenu}>
+                <Typography textAlign="center">Dashboard</Typography>
+              </MenuItem>
+              <MenuItem onClick={handleCloseUserMenu}>
+                <Typography textAlign="center">Logout</Typography>
+              </MenuItem>
             </Menu>
           </Box>
         </Toolbar>
