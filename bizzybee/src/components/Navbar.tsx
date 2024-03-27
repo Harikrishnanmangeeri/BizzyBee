@@ -104,7 +104,7 @@ function Navbar() {
               <MenuItem onClick={() => router.push("/Rent")}>
                 <Typography textAlign="center">Rent</Typography>
               </MenuItem>
-              <MenuItem onClick={() => router.push("/Renthistory")}>
+              <MenuItem onClick={() => router.push("/Allrent")}>
                 <Typography textAlign="center">Renthistory</Typography>
               </MenuItem>
             </Menu>
@@ -159,7 +159,7 @@ function Navbar() {
             </Button>
             <Button
               variant="outlined"
-              onClick={() => router.push("/Renthistory")}
+              onClick={() => router.push("/Allrent")}
               sx={{
                 my: 2,
                 mx: 1,

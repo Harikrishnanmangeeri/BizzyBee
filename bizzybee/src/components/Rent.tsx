@@ -1,5 +1,4 @@
 "use client";
-"use client";
 import React, { useState, useEffect } from "react";
 import {
   Button,
@@ -17,15 +16,16 @@ import axiosInstance from "@/axios/axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import { getCookies } from "cookies-next";
+const cookie = getCookies("token");
 
 interface Product {
   _id: string;
   ProductName: string;
-  AvaliableQty:Number;
+  AvailableQty: number;
   Price: number;
   Image: string;
 }
-
 
 interface RentProduct {
   product: Product;
@@ -37,16 +37,17 @@ const AddRent: React.FC = () => {
   const [name, setName] = useState<string>("");
   const [location, setLocation] = useState<string>("");
   const [date, setDate] = useState<Date>(new Date());
-  const [getDate, setGetDate] = useState<Date>(new Date());
   const [products, setProducts] = useState<Product[]>([]);
   const [selectedProductId, setSelectedProductId] = useState<string>("");
-  const [quantity, setQuantity] = useState<number>(0);
+  const [quantity, setQuantity] = useState<number>(1); // Default quantity to 1
   const [selectedProducts, setSelectedProducts] = useState<RentProduct[]>([]);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axiosInstance.get<Product[]>("user/showproducts");
+        const response = await axiosInstance.get<Product[]>(
+          "user/showproducts"
+        );
         setProducts(response.data);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -57,42 +58,57 @@ const AddRent: React.FC = () => {
   }, []);
 
   const handleAddProduct = () => {
-    const selectedProduct = products.find((product) => product._id === selectedProductId);
+    const selectedProduct = products.find(
+      (product) => product._id === selectedProductId
+    );
     if (selectedProduct) {
-      const newSelectedProduct: RentProduct = { product: selectedProduct, quantity };
+      const newSelectedProduct: RentProduct = {
+        product: selectedProduct,
+        quantity,
+      };
       setSelectedProducts([...selectedProducts, newSelectedProduct]);
-      setQuantity(0); 
+      setQuantity(1); // Reset quantity to 1 after adding product
     }
   };
 
   const handleSaveRent = async () => {
     try {
-      const response = await axiosInstance.post("user/addrent", {
-        contact,
-        name,
-        location,
-        date,
-        getDate,
-        products: selectedProducts,
-      });
+      const response = await axiosInstance.post(
+        "user/addrent",
+        {
+          contact,
+          name,
+          location,
+          date,
+          Products: selectedProducts,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${cookie.token}`,
+          },
+        }
+      );
 
-      if (response.data === "ok") {
+      console.log("Response from backend:", response.data);
+
+      if (response.status >= 200 && response.status < 300) {
         toast.success("Rent added successfully");
       } else {
         toast.error("Error adding rent");
       }
     } catch (error) {
+      console.error("Error adding rent:", error);
       toast.error("Error adding rent:", error.message);
     }
   };
 
-  // Calculate total amount
   const totalAmount = selectedProducts.reduce((total, selectedProduct) => {
     return total + selectedProduct.product.Price * selectedProduct.quantity;
   }, 0);
+
   return (
     <div>
-        <ToastContainer />
+      <ToastContainer />
       <Typography variant="h5" gutterBottom>
         Add Rent
       </Typography>
@@ -130,19 +146,6 @@ const AddRent: React.FC = () => {
             type="date"
             value={date.toISOString().split("T")[0]}
             onChange={(e) => setDate(new Date(e.target.value))}
-            fullWidth
-            margin="normal"
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            label="Get Date"
-            type="date"
-            value={getDate.toISOString().split("T")[0]}
-            onChange={(e) => setGetDate(new Date(e.target.value))}
             fullWidth
             margin="normal"
             InputLabelProps={{
@@ -198,7 +201,18 @@ const AddRent: React.FC = () => {
         <Grid item xs={12} sm={3}>
           <Button
             variant="contained"
-            color="primary"
+            style={{
+              backgroundColor: "#4caf50",
+              color: "#fff",
+              borderRadius: "8px",
+              padding: "12px 24px",
+              fontWeight: "bold",
+              boxShadow: "none",
+              textTransform: "uppercase",
+              transition: "background-color 0.3s",
+            }}
+            fullWidth
+            size="large"
             onClick={handleAddProduct}
           >
             Add Product
@@ -207,35 +221,49 @@ const AddRent: React.FC = () => {
         <Grid item xs={12}>
           {selectedProducts.map((selectedProduct, index) => (
             <Grid item xs={12} sm={6} key={index}>
-              <Paper
-                elevation={3}
-                style={{ padding: "10px", marginBottom: "10px" }}
-              >
+              <Paper elevation={3} sx={{ p: 1, mb: 2 }}>
                 <Card>
                   <CardMedia
                     component="img"
                     image={selectedProduct.product.Image}
                     alt={selectedProduct.product.ProductName}
-                    style={{ height: 140 }}
+                    style={{ height: 100, objectFit: "cover" }}
                   />
                   <CardContent>
                     <Typography variant="subtitle1" gutterBottom>
                       {selectedProduct.product.ProductName} - Quantity:{" "}
-                      {selectedProduct.quantity}
-                      {" "}{" "}price/Day :{selectedProduct.product.Price*selectedProduct.quantity}
+                      {selectedProduct.quantity} - Price/Day:{" "}
+                      {selectedProduct.product.Price * selectedProduct.quantity}
                     </Typography>
                   </CardContent>
                 </Card>
               </Paper>
-            
             </Grid>
           ))}
         </Grid>
         <Grid item xs={12}>
-          <Box>
-            <Typography>Total amount rent per Day : {totalAmount}</Typography>
-            <Button variant="contained" color="primary" onClick={handleSaveRent}>
-              Save Rent 
+          <Box sx={{ mt: 2 }}>
+            <Typography variant="subtitle1">
+              Total amount rent per Day: {totalAmount}
+            </Typography>
+            <Button
+              variant="contained"
+              style={{
+                backgroundColor: "#1976d2",
+                color: "#fff",
+                borderRadius: "8px",
+                padding: "12px 24px",
+                fontWeight: "bold",
+                boxShadow: "none",
+                textTransform: "uppercase",
+                transition: "background-color 0.3s",
+              }}
+              fullWidth
+              size="large"
+              onClick={handleSaveRent}
+              sx={{ mt: 2 }}
+            >
+              Save Rent
             </Button>
           </Box>
         </Grid>
